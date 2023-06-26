@@ -1,4 +1,3 @@
-
 # Stage 1 - the build process
 FROM node:14 as build-deps
 WORKDIR /usr/src/app
@@ -11,4 +10,4 @@ RUN npm run build
 FROM node:14
 WORKDIR /usr/src/app
 COPY --from=build-deps /usr/src/app .
-CMD ["npm", "run", "start:prod"]
+CMD ["npm", "run", "start:dev"]
