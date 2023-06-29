@@ -1,10 +1,16 @@
 import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
+import { WinstonLogger } from './winston.logger';
+import { SERVICENAME } from './constants';
 
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  private readonly logger = new WinstonLogger();
+
+  constructor(private readonly appService: AppService) {
+    this.logger.debug('Instantiating ' + SERVICENAME);
+  }
 
   @EventPattern('message_pattern')
   async handleEvent(@Payload() data: string) {

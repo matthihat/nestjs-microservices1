@@ -2,9 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { GlobalExceptionsHandler } from './GlobalExceptionsHandler';
+import { WinstonLogger } from './winston.logger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // Application options
+  const options = { logger: new WinstonLogger() };
+
+  // Create Nest app
+  const app = await NestFactory.create(AppModule, options);
 
   // Set up global xception handler
   const globalExceptionsHandler = new GlobalExceptionsHandler();
@@ -20,8 +25,9 @@ async function bootstrap() {
     },
   };
   app.connectMicroservice(microserviceOptions);
-
   await app.startAllMicroservices();
+
+  // Start
   await app.listen(3000);
 }
 
