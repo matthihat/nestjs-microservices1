@@ -1,0 +1,6 @@
+[submodule "microservice1"]
+	path = microservice1
+	url = ./microservice1
+[submodule "microservice2"]
+	path = microservice2
+	url = ./microservice2
