@@ -1,6 +1,6 @@
 [submodule "microservice1"]
     path = microservice1
-    url = https://github.com/matthihat/nestjs-microservices1
+    url = https://github.com/matthihat/nestjs-microservices1.git
 [submodule "microservice2"]
     path = microservice2
-    url = https://github.com/matthihat/nestjs-microservices2
+    url = https://github.com/matthihat/nestjs-microservices2.git
