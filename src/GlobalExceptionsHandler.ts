@@ -17,27 +17,51 @@ export class GlobalExceptionsHandler implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const status =
-      exception instanceof HttpException ? exception.getStatus() : 500;
+    const status = this.getStatus(exception);
+    const logMessage = this.getLogMessage(exception);
+
+    this.logger.error(logMessage);
+
+    const responseMessage = this.getResponseMessage(
+      exception,
+      status,
+      request.url,
+    );
+
+    response.status(status).json(responseMessage);
+  }
+
+  private getStatus(exception: unknown): number {
+    return exception instanceof HttpException ? exception.getStatus() : 500;
+  }
+
+  private getLogMessage(exception: unknown): string {
+    if (exception instanceof BaseException) {
+      return `\nMessage: ${exception.message}\nException: ${exception.name}\nOrigin: ${exception.origin}\nStack: ${exception.stack}`;
+    }
+    return 'An error occurred ' + SERVICENAME;
+  }
+
+  private getResponseMessage(
+    exception: unknown,
+    status: number,
+    url: string,
+  ): object {
+    const baseResponse = {
+      statusCode: status,
+      timestamp: new Date().toISOString(),
+      path: url,
+    };
 
     if (exception instanceof BaseException) {
-      this.logger.error(
-        `\nMessage: ${exception.message}\nException: ${exception.name}\nOrigin: ${exception.origin}\nStack: ${exception.stack}`,
-      );
-      response.status(status).json({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        origin: exception.origin,
-      });
+      baseResponse['origin'] = exception.origin;
+      if (process.env.NODE_ENV === 'development') {
+        baseResponse['stack'] = exception.stack;
+      }
     } else {
-      this.logger.error('An error occurred', SERVICENAME);
-      response.status(status).json({
-        statusCode: status,
-        timestamp: new Date().toISOString(),
-        path: request.url,
-        origin: 'MICROSERVICE 1',
-      });
+      baseResponse['origin'] = 'MICROSERVICE 1';
     }
+
+    return baseResponse;
   }
 }
