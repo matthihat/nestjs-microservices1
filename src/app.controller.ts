@@ -1,8 +1,10 @@
-import { Controller, Get, NotFoundException } from '@nestjs/common';
+import { Controller, Get, HttpStatus } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
 import { WinstonLogger } from '@matthihat/customlogger';
 import { SERVICENAME } from './constants';
+import { BaseException } from '@matthihat/custommodels/dist/exceptions/baseException';
+import { Origin } from '@matthihat/custommodels/dist/enums/origin';
 
 @Controller()
 export class AppController {
@@ -26,7 +28,11 @@ export class AppController {
 
   @Get()
   getHello(): string {
-    throw new NotFoundException();
+    throw new BaseException(
+      'Felmeddelande',
+      HttpStatus.GATEWAY_TIMEOUT,
+      Origin.TEAM,
+    );
     return this.appService.getHello();
   }
 }

@@ -7,6 +7,7 @@ import {
 import { Request, Response } from 'express';
 import { SERVICENAME } from './constants';
 import { WinstonLogger } from '@matthihat/customlogger/dist';
+import { BaseException } from '@matthihat/custommodels/dist/exceptions/baseException';
 
 @Catch()
 export class GlobalExceptionsHandler implements ExceptionFilter {
@@ -19,20 +20,24 @@ export class GlobalExceptionsHandler implements ExceptionFilter {
     const status =
       exception instanceof HttpException ? exception.getStatus() : 500;
 
-    if (exception instanceof Error) {
+    if (exception instanceof BaseException) {
       this.logger.error(
-        exception.message + ' ' + exception.name + ' ' + exception.stack,
-        SERVICENAME,
+        `\nMessage: ${exception.message}\nException: ${exception.name}\nOrigin: ${exception.origin}\nStack: ${exception.stack}`,
       );
+      response.status(status).json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        origin: exception.origin,
+      });
     } else {
       this.logger.error('An error occurred', SERVICENAME);
+      response.status(status).json({
+        statusCode: status,
+        timestamp: new Date().toISOString(),
+        path: request.url,
+        origin: 'MICROSERVICE 1',
+      });
     }
-
-    response.status(status).json({
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
-      origin: SERVICENAME,
-    });
   }
 }
