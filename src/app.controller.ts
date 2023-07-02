@@ -5,6 +5,7 @@ import { WinstonLogger } from '@matthihat/customlogger';
 import { SERVICENAME } from './constants';
 import { BaseException } from '@matthihat/custommodels/dist/exceptions/baseException';
 import { Origin } from '@matthihat/custommodels/dist/enums/origin';
+import { EventMessage } from '@matthihat/custommodels/dist/events/eventmessage';
 
 @Controller()
 export class AppController {
@@ -16,7 +17,7 @@ export class AppController {
   }
 
   @EventPattern('message_pattern')
-  async handleEvent(@Payload() data: string) {
+  async handleEvent(@Payload() data: EventMessage) {
     console.log(data); // This will log the message sent from the other microservice
   }
 

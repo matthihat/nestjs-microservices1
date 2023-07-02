@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@matthihat/customlogger": "^1.0.0",
-    "@matthihat/custommodels": "^1.0.0",
+    "@matthihat/custommodels": "^1.1.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.9",
     "@nestjs/microservices": "^9.0.0",
