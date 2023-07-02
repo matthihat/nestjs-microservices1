@@ -1,14 +1,15 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, NotFoundException } from '@nestjs/common';
 import { AppService } from './app.service';
 import { EventPattern, MessagePattern, Payload } from '@nestjs/microservices';
-import { WinstonLogger } from './winston.logger';
+import { WinstonLogger } from '@matthihat/customlogger';
 import { SERVICENAME } from './constants';
 
 @Controller()
 export class AppController {
-  private readonly logger = new WinstonLogger();
-
-  constructor(private readonly appService: AppService) {
+  constructor(
+    private readonly appService: AppService,
+    private readonly logger: WinstonLogger,
+  ) {
     this.logger.debug('Instantiating ' + SERVICENAME);
   }
 
@@ -25,6 +26,7 @@ export class AppController {
 
   @Get()
   getHello(): string {
+    throw new NotFoundException();
     return this.appService.getHello();
   }
 }
